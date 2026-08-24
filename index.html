@@ -49,10 +49,15 @@ input:focus{outline:none;border-color:var(--olive);box-shadow:0 0 0 3px rgba(110
 table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--sand-soft);border-radius:14px;overflow:hidden}
 th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--sand-soft);font-size:.92rem}
 th{background:#F4F5EF;font-weight:600;color:var(--olive-deep);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase}
+th.num,th.pct{text-align:right}
+/* числовые колонки узкие и прижаты к правому краю — так число читается вместе со строкой */
+th.num,td.num{width:84px}
+th.pct,td.pct{width:104px}
+.narrow{max-width:660px}
 tr:last-child td{border-bottom:0}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
 td.pct{text-align:right;color:var(--ink-faint);font-variant-numeric:tabular-nums}
-.bar{height:8px;border-radius:4px;background:var(--sand-soft);overflow:hidden;margin-top:5px}
+.bar{height:8px;border-radius:4px;background:var(--sand-soft);overflow:hidden;margin-top:6px;max-width:280px}
 .bar span{display:block;height:100%;background:var(--olive)}
 .empty{padding:40px 0;text-align:center;color:var(--ink-faint)}
 .controls{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -219,7 +224,8 @@ function renderFunnel(events) {
     return "<tr><td>" + step.title + '<div class="bar"><span style="width:' + pct + '%"></span></div></td>' +
       '<td class="num">' + n + '</td><td class="pct">' + pct + "%</td></tr>";
   }).join("");
-  box.innerHTML = "<table><thead><tr><th>Шаг</th><th>Человек</th><th>От пришедших</th></tr></thead><tbody>" +
+  box.innerHTML = '<table class="narrow"><thead><tr><th>Шаг</th>' +
+    '<th class="num">Человек</th><th class="pct">От пришедших</th></tr></thead><tbody>' +
     rows + "</tbody></table>";
 }
 
@@ -237,8 +243,10 @@ function renderSources(events) {
       '<td class="num">' + count(events, "RETURN_D1", src) + "</td>" +
       '<td class="num">' + count(events, "RETURN_D7", src) + "</td></tr>";
   }).join("");
-  box.innerHTML = "<table><thead><tr><th>Источник</th><th>Открыли</th><th>Результат</th>" +
-    "<th>Попробовали</th><th>Вечер</th><th>День 2</th><th>Неделя</th></tr></thead><tbody>" +
+  box.innerHTML = '<table><thead><tr><th>Источник</th>' +
+    '<th class="num">Открыли</th><th class="num">Результат</th>' +
+    '<th class="num">Попробовали</th><th class="num">Вечер</th>' +
+    '<th class="num">День 2</th><th class="num">Неделя</th></tr></thead><tbody>' +
     rows + "</tbody></table>";
 }
 
@@ -252,7 +260,8 @@ function renderShares(events, list, boxId, emptyText) {
     return "<tr><td>" + item.title + '<div class="bar"><span style="width:' + pct + '%"></span></div></td>' +
       '<td class="num">' + n + '</td><td class="pct">' + pct + "%</td></tr>";
   }).join("");
-  box.innerHTML = "<table><thead><tr><th>Ответ</th><th>Раз</th><th>Доля</th></tr></thead><tbody>" +
+  box.innerHTML = '<table class="narrow"><thead><tr><th>Ответ</th>' +
+    '<th class="num">Раз</th><th class="pct">Доля</th></tr></thead><tbody>' +
     rows + '</tbody></table><p class="muted" style="margin-top:8px">Всего ответов: ' + total + "</p>";
 }
 
