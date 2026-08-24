@@ -57,6 +57,21 @@ th.pct,td.pct{width:142px}
 /* таблица прокручивается сама, страница вбок не едет */
 .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:4px}
 .hint-under{margin-top:8px;color:var(--ink-faint);font-size:.8rem}
+.only-narrow{display:none}
+.source-card{
+  border:1px solid var(--sand-soft);border-radius:16px;background:var(--card);
+  padding:14px 16px;margin-bottom:10px;
+}
+.source-card h4{
+  margin:0 0 8px;font-size:.95rem;font-weight:600;color:var(--olive-deep);
+}
+.source-row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:6px 0;border-bottom:1px solid var(--sand-soft);font-size:.88rem;
+}
+.source-row:last-child{border-bottom:0}
+.source-row span:first-child{color:var(--ink-soft)}
+.source-row span:last-child{font-variant-numeric:tabular-nums;font-weight:500}
 
 @media (max-width:560px){
   th,td{padding:9px 10px;font-size:.86rem}
@@ -66,15 +81,9 @@ th.pct,td.pct{width:142px}
   .bar{max-width:none}
   /* у таблицы источников шесть числовых колонок — она прокручивается,
      а название источника остаётся на виду */
-  /* sticky на ячейках не работает при border-collapse:collapse — отсюда separate */
-  #sources table{min-width:480px;border-collapse:separate;border-spacing:0}
-  #sources th,#sources td{border-bottom:1px solid var(--sand-soft)}
-  #sources tr:last-child td{border-bottom:0}
-  #sources th:first-child,#sources td:first-child{
-    position:sticky;left:0;z-index:1;background:var(--card);
-    box-shadow:1px 0 0 var(--sand-soft);
-  }
-  #sources thead th:first-child{background:#F4F5EF}
+  /* таблица из семи колонок на телефоне нечитаема — вместо неё карточки */
+  .only-wide{display:none}
+  .only-narrow{display:block}
 }
 tr:last-child td{border-bottom:0}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
@@ -266,11 +275,25 @@ function renderSources(events) {
       '<td class="num">' + count(events, "RETURN_D1", src) + "</td>" +
       '<td class="num">' + count(events, "RETURN_D7", src) + "</td></tr>";
   }).join("");
-  box.innerHTML = '<div class="tablewrap"><table><thead><tr><th>Источник</th>' +
+  var STEPS = [
+    ["Открыли", "OPEN"], ["Дошли до результата", "RESULT"],
+    ["Решили попробовать", "TRY_TODAY"], ["Завершили вечер", "EVENING_DONE"],
+    ["Вернулись на второй день", "RETURN_D1"], ["Пользуются через неделю", "RETURN_D7"]
+  ];
+  var cards = sources.map(function (src) {
+    return '<div class="source-card"><h4>' + src + "</h4>" +
+      STEPS.map(function (step) {
+        return '<div class="source-row"><span>' + step[0] + "</span><span>" +
+          count(events, step[1], src) + "</span></div>";
+      }).join("") + "</div>";
+  }).join("");
+
+  box.innerHTML = '<div class="tablewrap only-wide"><table><thead><tr><th>Источник</th>' +
     '<th class="num">Открыли</th><th class="num">Результат</th>' +
     '<th class="num">Попробовали</th><th class="num">Вечер</th>' +
     '<th class="num">День 2</th><th class="num">Неделя</th></tr></thead><tbody>' +
-    rows + "</tbody></table></div>";
+    rows + '</tbody></table></div>' +
+    '<div class="only-narrow">' + cards + "</div>";
 }
 
 function renderShares(events, list, boxId, emptyText) {
