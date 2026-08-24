@@ -66,9 +66,13 @@ th.pct,td.pct{width:142px}
   .bar{max-width:none}
   /* у таблицы источников шесть числовых колонок — она прокручивается,
      а название источника остаётся на виду */
-  #sources table{min-width:480px}
+  /* sticky на ячейках не работает при border-collapse:collapse — отсюда separate */
+  #sources table{min-width:480px;border-collapse:separate;border-spacing:0}
+  #sources th,#sources td{border-bottom:1px solid var(--sand-soft)}
+  #sources tr:last-child td{border-bottom:0}
   #sources th:first-child,#sources td:first-child{
-    position:sticky;left:0;background:var(--card);z-index:1;
+    position:sticky;left:0;z-index:1;background:var(--card);
+    box-shadow:1px 0 0 var(--sand-soft);
   }
   #sources thead th:first-child{background:#F4F5EF}
 }
