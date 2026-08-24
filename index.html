@@ -54,6 +54,24 @@ th.num,th.pct{text-align:right}
 th.num,td.num{width:84px}
 th.pct,td.pct{width:142px}
 .narrow{max-width:660px}
+/* таблица прокручивается сама, страница вбок не едет */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:4px}
+.hint-under{margin-top:8px;color:var(--ink-faint);font-size:.8rem}
+
+@media (max-width:560px){
+  th,td{padding:9px 10px;font-size:.86rem}
+  th{font-size:.66rem;letter-spacing:.03em}
+  th.num,td.num{width:54px}
+  th.pct,td.pct{width:64px}
+  .bar{max-width:none}
+  /* у таблицы источников шесть числовых колонок — она прокручивается,
+     а название источника остаётся на виду */
+  #sources table{min-width:480px}
+  #sources th:first-child,#sources td:first-child{
+    position:sticky;left:0;background:var(--card);z-index:1;
+  }
+  #sources thead th:first-child{background:#F4F5EF}
+}
 tr:last-child td{border-bottom:0}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
 td.pct{text-align:right;color:var(--ink-faint);font-variant-numeric:tabular-nums}
@@ -224,9 +242,10 @@ function renderFunnel(events) {
     return "<tr><td>" + step.title + '<div class="bar"><span style="width:' + pct + '%"></span></div></td>' +
       '<td class="num">' + n + '</td><td class="pct">' + pct + "%</td></tr>";
   }).join("");
-  box.innerHTML = '<table class="narrow"><thead><tr><th>Шаг</th>' +
-    '<th class="num">Человек</th><th class="pct">От пришедших</th></tr></thead><tbody>' +
-    rows + "</tbody></table>";
+  box.innerHTML = '<div class="tablewrap"><table class="narrow"><thead><tr><th>Шаг</th>' +
+    '<th class="num">Человек</th><th class="pct">Доля</th></tr></thead><tbody>' +
+    rows + '</tbody></table></div>' +
+    '<p class="hint-under">Доля считается от числа открывших сайт.</p>';
 }
 
 function renderSources(events) {
@@ -243,11 +262,11 @@ function renderSources(events) {
       '<td class="num">' + count(events, "RETURN_D1", src) + "</td>" +
       '<td class="num">' + count(events, "RETURN_D7", src) + "</td></tr>";
   }).join("");
-  box.innerHTML = '<table><thead><tr><th>Источник</th>' +
+  box.innerHTML = '<div class="tablewrap"><table><thead><tr><th>Источник</th>' +
     '<th class="num">Открыли</th><th class="num">Результат</th>' +
     '<th class="num">Попробовали</th><th class="num">Вечер</th>' +
     '<th class="num">День 2</th><th class="num">Неделя</th></tr></thead><tbody>' +
-    rows + "</tbody></table>";
+    rows + "</tbody></table></div>";
 }
 
 function renderShares(events, list, boxId, emptyText) {
@@ -260,9 +279,9 @@ function renderShares(events, list, boxId, emptyText) {
     return "<tr><td>" + item.title + '<div class="bar"><span style="width:' + pct + '%"></span></div></td>' +
       '<td class="num">' + n + '</td><td class="pct">' + pct + "%</td></tr>";
   }).join("");
-  box.innerHTML = '<table class="narrow"><thead><tr><th>Ответ</th>' +
+  box.innerHTML = '<div class="tablewrap"><table class="narrow"><thead><tr><th>Ответ</th>' +
     '<th class="num">Раз</th><th class="pct">Доля</th></tr></thead><tbody>' +
-    rows + '</tbody></table><p class="muted" style="margin-top:8px">Всего ответов: ' + total + "</p>";
+    rows + '</tbody></table></div><p class="muted" style="margin-top:8px">Всего ответов: ' + total + "</p>";
 }
 
 function render() {
